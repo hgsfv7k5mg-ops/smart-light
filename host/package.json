@@ -1,0 +1,18 @@
+{
+  "name": "smart-light-host",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Light 上位机：本地 MQTT Broker + 实时网页大屏 + OTA 固件分发（零 Docker / 零云账号）",
+  "main": "broker.js",
+  "scripts": {
+    "start": "node broker.js"
+  },
+  "dependencies": {
+    "aedes": "^1.2.0",
+    "mqtt": "^5.16.0",
+    "ws": "^8.22.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

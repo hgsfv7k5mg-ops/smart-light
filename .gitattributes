@@ -1,0 +1,14 @@
+# 统一换行符，避免 Windows / Linux 协作时整片文件被标记为改动
+* text=auto eol=lf
+
+# Windows 批处理脚本必须用 CRLF，否则部分 cmd 解析异常
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# 二进制资源不做转换
+*.bin binary
+*.png binary
+*.jpg binary
+*.ico binary
+*.pdf binary

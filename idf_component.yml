@@ -1,0 +1,6 @@
+## 工程(main 组件)清单文件
+## 外设驱动依赖声明在用到的组件里：
+##   components/oled_ui/idf_component.yml     -> espressif/ssd1306
+##   components/temp_sensor/idf_component.yml -> espressif/ds18b20, espressif/onewire_bus
+## 若网络无法下载，请把组件文件夹手动放进 components/ 目录。
+dependencies:

@@ -1,0 +1,109 @@
+menu "Smart Light 配置"
+
+    menu "MQTT 云端"
+        config CLOUD_MQTT_ENABLE
+            bool "启用通用 MQTT 接入（EMQX / ThingsBoard / 本地 Broker）"
+            default n
+
+        config CLOUD_MQTT_URI
+            string "Broker 地址"
+            depends on CLOUD_MQTT_ENABLE
+            default "mqtt://192.168.1.100:1883"
+            help
+                本地 Broker 一般为 mqtt://<电脑IP>:1883。
+                接 ThingsBoard 用 mqtt://<TB_IP>:1883。
+                也可用公共测试 Broker: mqtt://broker.emqx.io:1883
+
+        config CLOUD_MQTT_USERNAME
+            string "用户名（可留空）"
+            depends on CLOUD_MQTT_ENABLE
+            default ""
+
+        config CLOUD_MQTT_PASSWORD
+            string "密码（可留空）"
+            depends on CLOUD_MQTT_ENABLE
+            default ""
+
+        config CLOUD_MQTT_DEVICE_ID
+            string "设备 ID（留空则用 MAC 尾号）"
+            depends on CLOUD_MQTT_ENABLE
+            default ""
+
+        config CLOUD_MQTT_TB_MODE
+            bool "按 ThingsBoard 主题格式"
+            depends on CLOUD_MQTT_ENABLE
+            default n
+            help
+                勾选后用 v1/devices/me/telemetry 标准主题，直接对接 ThingsBoard。
+
+        config CLOUD_MQTT_POST_INTERVAL_SEC
+            int "上报周期（秒）"
+            depends on CLOUD_MQTT_ENABLE
+            default 5
+            range 1 3600
+    endmenu
+
+    menu "OTA 远程升级"
+        config OTA_ENABLE
+            bool "启用 OTA 远程升级"
+            default y
+
+        config OTA_FIRMWARE_URL
+            string "默认固件地址"
+            depends on OTA_ENABLE
+            default "http://192.168.1.100:8083/ota/smart_light.bin"
+            help
+                服务器上固件 .bin 的完整地址。
+                broker.js 的 HTTP 端口已内置 /ota/ 静态路由 —— 把编译出的
+                build/smart_light.bin 复制到 host\ota\ 即可（或运行 host\push-firmware.cmd）。
+                设备端也可用串口命令 OTA <网址> 临时指定其它地址。
+
+        config OTA_AUTO_REBOOT
+            bool "升级成功后自动重启"
+            depends on OTA_ENABLE
+            default y
+    endmenu
+
+    menu "WiFi"
+        config WIFI_STA_SSID
+            string "默认 WiFi 名称（未配网时使用，可留空）"
+            default ""
+
+        config WIFI_STA_PASSWORD
+            string "默认 WiFi 密码"
+            default ""
+
+        config WIFI_CONNECT_TIMEOUT_SEC
+            int "启动连接等待时间（秒）"
+            default 15
+            range 1 120
+    endmenu
+
+    menu "BLE 配网 (ESP-IDF Provisioning)"
+        config PROV_POP
+            string "配网校验码 POP"
+            default "abcd1234"
+            help
+                手机 App 下发 WiFi 凭据前要输入的校验码。
+                配套 App 是 ESP BLE Prov（ESP-IDF Provisioning），
+                它会自动扫出以 PROV_ 开头的设备名。
+                注意：本项目用的是 wifi_prov_scheme_ble（protocomm BLE），
+                与 BluFi 协议的 EspBlufi 不兼容。
+
+        config PROV_AUTO_START_ON_FAIL
+            bool "启动时连不上 WiFi 就自动进入配网"
+            default y
+            help
+                走"固件内置/NVS 已有凭据去连接"这条路时才会生效。
+                如果上面的 WiFi SSID 留空、且 NVS 里也没配过网，
+                开机会直接进入 BLE 配网广播，与本项无关。
+    endmenu
+
+    menu "系统"
+        config SNTP_SYNC_TIMEOUT_SEC
+            int "SNTP 校时超时（秒）"
+            default 15
+            range 1 120
+    endmenu
+
+endmenu
